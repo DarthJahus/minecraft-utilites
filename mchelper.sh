@@ -4,6 +4,8 @@ BASE_DIR="/minecraft"
 SERVER_DIR="$BASE_DIR/servers-available"
 SERVER_ACTIVE="$BASE_DIR/server"
 MOD_DIR="$SERVER_ACTIVE/mods"
+source /minecraft/scripts/mcrcon.conf
+MCRCON_ARGS=(-H "$MCRCON_HOST" -P "$MCRCON_PORT" -p "$MCRCON_PASS")
 
 # ANSI colors
 RED="\e[31m"
@@ -71,7 +73,7 @@ case "$1" in
         echo -e "[INFO] Enabled server: ${GREEN}$TARGET${RESET}"
         echo -e "[${RED}WARNING${RESET}] Please manually start Minecraft Service with ${GREY}systemctl start minecraft${RESET}"
         ;;
-
+        
     servers)
         echo "Available servers:"
         for srv in "$SERVER_DIR"/*; do
@@ -83,9 +85,13 @@ case "$1" in
             fi
         done
         ;;
-
+        
+    con)
+        exec "$MCRCON_BIN" "${MCRCON_ARGS[@]}"
+        ;;
+        
     *)
-        echo "Usage: $0 {mods|dismod <mod>|enmod <mod>|servers|enserv <server>}"
+        echo "Usage: $0 {con|mods|dismod <mod>|enmod <mod>|servers|enserv <server>}"
         exit 1
         ;;
 esac
